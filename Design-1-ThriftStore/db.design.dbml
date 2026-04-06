@@ -1,0 +1,121 @@
+users [icon: user, color: green] {
+  userID serial pk 
+  userFirstName varchar() not null
+  userLastName varchar()
+  email varchar() unique not null
+  contact char(14) unique not null
+  createAt date not null
+}
+
+userAddress [icon: home, color: green] {
+  addressId serial pk 
+  userID fk 
+  street text not null
+  city varchar() not null 
+  landmark text 
+  state varchar() not null
+  pincode char(14) not null 
+}
+
+orders [icon: shopping-cart, color: red] {
+  orderId serial pk 
+  userID fk
+  orderStatus enum("pending", "completed", "transistion") not null
+  orderAmount int not null
+  orderPlatform enum("website", "offline", "quick commerce") not null
+  placedOn timestamps not null 
+}
+
+orderItems [icon: shopping-bag, color: red] {
+  orderItemId serial pk 
+  orderId fk
+  productID fk
+  itemPrice int not null 
+  orderQuantity int not null
+}
+
+category [icon: type, color: blue] {
+  categoryId serial pk
+  name enum("handmande", "thrifted")
+}
+
+products [icon: shopify, color: blue] {
+  productID serial pk 
+  categoryId fk 
+  orderId fk 
+  productAttributeId fk
+  name varchar() not null 
+  description text not null
+  basePrice int not null 
+}
+
+productAttributes [color: blue] {
+  productAttributeId serial pk 
+  shape text not null 
+  size text not null 
+  description text not null 
+  isUsed boolean default: false not null
+}
+
+inventory [icon: gcp-os-inventory-management, color: blue] {
+  inventoryId serial pk 
+  productID fk 
+  stock int default: 1 not null
+  isUnique boolean default: false
+}
+
+transaction [icon: payment, color: purple] {
+  transactionId serial pk 
+  orderId fk 
+  transactionMode enum("UPI", "Card", "EMI") not null 
+  transactionStatus enum("pending", "completed", "in transit")
+}
+
+transactionDetails [icon: phonepe, color: purple] {
+  detailsId pk 
+  transactionId fk 
+  bankName varchar() not null 
+  creditBy varchar() not null 
+  debitBy varchar() not null 
+}
+
+shipping [icon: ship, color: yellow] {
+  shippingId serial pk
+  userID fk 
+  orderId fk 
+  orderStatus enum("transit", "out of delviery", "delviered") not null
+  deliveryDate Date not null 
+  orderCondition text not null
+}
+
+reviews [icon: revolut, color: orange]{
+  reviewId serial pk 
+  userID fk 
+  shippingReview text 
+  productReview text 
+  valueFormoney text
+}
+
+// one user can have multiple addresses
+userAddress.userID >  users.userID
+users.userID < orders.userID
+orders.orderId < orderItems.orderId
+products.productID > category.categoryId
+products.orderId > orders.orderId
+products.productAttributeId - productAttributes.productAttributeId
+products.productID - inventory.productID
+orders.orderId - transaction.orderId
+orders.orderId - shipping.orderId
+users.userID - shipping.userID
+users.userID - reviews.userID
+transaction.transactionId - transactionDetails.transactionId
+
+
+
+
+
+
+
+
+
+
