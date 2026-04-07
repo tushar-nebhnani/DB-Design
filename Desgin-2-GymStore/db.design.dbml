@@ -1,0 +1,116 @@
+users [icon: users, color: green] {
+  userId serial pk
+  role enum('consumer', 'trainer', 'admin')
+  firstName string not null 
+  lastName string not null 
+  gender enum('male', 'female', 'other', 'prefer_not_to_say')
+  age int not null
+  contact string not null 
+  mail string not null unique
+  createdAt timestamps not null 
+}
+
+usersDetails [icon: user, color: green] {
+  detailsId serial pk 
+  userId fk 
+  weight int not null 
+  bodyType enum("ectomorph", "mesomorph", "endomorph")
+  experienceLevel enum("beginner", "intermediate", "advanced", "competition_prep")
+  goal enum("lose weight", "gain weight", "maintain", "strength training")
+  hasMedicalCondition boolean not null 
+  medicalCondition text 
+  hasSpecialNeeds boolean not null
+  specialNeedsDescription text
+  trainerGenderPreference enum("male", "female", "no_preference")
+}
+
+plans [icon: paper-plane, color: black] {
+  planId serial pk 
+  name string not null 
+  planCategory enum("free", "general_paid", "custom_paid", "group", "couple", "premium_plus")
+  cost int not null 
+  durationDays int not null 
+  trialDays int default 0
+  maxEnrollment int 
+  includesDietPlan boolean not null
+  isActive boolean not null
+}
+
+subscriptions [icon: bookmark, color: blue] {
+  subscriptionId serial pk
+  userId fk
+  planId fk
+  startDate date not null
+  endDate date not null
+  trialEndsAt date
+  isActive boolean not null
+}
+
+payments [icon: credit-card, color: green] {
+  paymentId serial pk 
+  subscriptionId fk 
+  amountPaid int not null 
+  paymentMode enum("UPI", "EMI", "Bank Transfer", "Card Payment")
+  paymentDate timestamps not null 
+  isRefunded boolean default false
+}
+
+trainerDetails [icon: person, color: purple] {
+  trainerId serial pk 
+  userId fk
+  specialization string 
+  maxClientCapacity int not null
+  joinedDate Date not null 
+  salary int not null 
+  isActive boolean not null
+}
+
+clientTrainerAssignments [icon: link, color: purple] {
+  assignmentId serial pk
+  userId fk 
+  trainerId fk 
+  assignedDate date not null
+  status enum("active", "completed", "transferred")
+}
+
+trainerReviews [icon: star, color: yellow] {
+  reviewId serial pk
+  userId fk 
+  trainerId fk
+  rating int not null 
+  feedback text
+  reviewDate timestamps not null
+}
+
+weeklyGoals [icon: target, color: red] {
+  goalId serial pk
+  userId fk
+  weekStartDate date not null
+  targetWeight float
+  targetWorkouts int
+  description text
+  isAchieved boolean default false
+}
+
+gymVisits [icon: activity, color: orange] {
+  visitId serial pk
+  userId fk
+  checkInTime timestamps not null
+  checkOutTime timestamps
+}
+
+
+users.userId - usersDetails.userId 
+users.userId - trainerDetails.userId 
+
+users.userId < subscriptions.userId
+plans.planId < subscriptions.planId
+subscriptions.subscriptionId < payments.subscriptionId
+
+users.userId < clientTrainerAssignments.userId
+trainerDetails.trainerId < clientTrainerAssignments.trainerId
+users.userId < trainerReviews.userId
+trainerDetails.trainerId < trainerReviews.trainerId
+
+users.userId < gymVisits.userId
+users.userId < weeklyGoals.userId
