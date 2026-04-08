@@ -1,0 +1,72 @@
+Patient [icon: user, color: blue] {
+  patient_id int [pk]
+  first_name string
+  last_name string
+  dob date
+  phone string
+}
+
+Specialty [icon: tag, color: purple] {
+  specialty_id int [pk]
+  name string
+}
+
+Doctor [icon: users, color: blue] {
+  doctor_id int [pk]
+  specialty_id int [fk]
+  first_name string
+  last_name string
+}
+
+Appointment [icon: calendar, color: yellow] {
+  appointment_id int [pk]
+  patient_id int [fk]
+  doctor_id int [fk]
+  scheduled_time datetime
+  status string
+}
+
+Consultation [icon: stethoscope, color: green] {
+  consultation_id int [pk]
+  appointment_id int [fk]
+  doctor_notes string
+  diagnosis string
+  visited_at datetime
+}
+
+Test_Catalog [icon: list, color: pink] {
+  test_id int [pk]
+  test_name string
+  price decimal
+}
+
+Prescribed_Test [icon: activity, color: pink] {
+  prescription_id int [pk]
+  consultation_id int [fk]
+  test_id int [fk]
+  test_status string
+}
+
+Report [icon: file-text, color: orange] {
+  report_id int [pk]
+  prescription_id int [fk]
+  result_summary string
+  document_url string
+  generated_at datetime
+}
+
+Payment [icon: credit-card, color: red] {
+  payment_id int [pk]
+  appointment_id int [fk]
+  amount decimal
+  status string
+}
+
+Specialty.specialty_id < Doctor.specialty_id
+Patient.patient_id < Appointment.patient_id
+Doctor.doctor_id < Appointment.doctor_id
+Appointment.appointment_id - Consultation.appointment_id
+Appointment.appointment_id < Payment.appointment_id
+Consultation.consultation_id < Prescribed_Test.consultation_id
+Test_Catalog.test_id < Prescribed_Test.test_id
+Prescribed_Test.prescription_id - Report.prescription_id
