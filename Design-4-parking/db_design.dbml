@@ -1,0 +1,69 @@
+Vehicle_Category [icon: settings, color: gray] {
+  category_id INT [pk]
+  type VARCHAR (Bike, Car, SUV, Cab, EV)
+  description TEXT
+}
+
+Access_Category [icon: star, color: purple] {
+  access_id INT [pk]
+  access_type VARCHAR ( General, VIP, Exhibitor, Cosplayer, Staff)
+}
+
+Vehicle [icon: truck, color: blue] {
+  vehicle_id INT [pk]
+  license_plate VARCHAR
+  category_id INT [fk]
+  owner_contact VARCHAR ("Optional, useful for VIPs/Exhibitors")
+  created_at TIMESTAMP
+}
+
+Parking_Zone [icon: map, color: teal] {
+  zone_id INT [pk]
+  zone_name VARCHAR (Level 1, Level 2, North Wing)
+  total_capacity INT
+}
+
+Parking_Spot [icon: map-pin, color: red] {
+  spot_id INT [pk]
+  zone_id INT [fk]
+  spot_number VARCHAR
+  category_id INT [fk] 
+  access_id INT [fk] 
+  is_ev_charging BOOLEAN
+  current_status VARCHAR (Available, Occupied, Maintenance)
+}
+
+Parking_Session [icon: clock, color: orange] {
+  session_id INT [pk]
+  vehicle_id INT [fk]
+  spot_id INT [fk]
+  entry_time TIMESTAMP
+  exit_time TIMESTAMP
+  session_status VARCHAR (Active, Completed)
+}
+
+Ticket [icon: file-text, color: yellow] {
+  ticket_id INT [pk]
+  session_id INT [fk]
+  barcode VARCHAR
+  issue_time TIMESTAMP
+}
+
+Payment [icon: credit-card, color: green] {
+  payment_id INT [pk]
+  session_id INT [fk]
+  amount_calculated DECIMAL
+  payment_status VARCHAR
+  payment_method VARCHAR 
+  payment_time TIMESTAMP
+}
+
+//Relations between tables
+Vehicle_Category.category_id < Vehicle.category_id
+Vehicle_Category.category_id < Parking_Spot.category_id
+Access_Category.access_id < Parking_Spot.access_id
+Parking_Zone.zone_id < Parking_Spot.zone_id
+Vehicle.vehicle_id < Parking_Session.vehicle_id
+Parking_Spot.spot_id < Parking_Session.spot_id
+Parking_Session.session_id - Ticket.session_id
+Parking_Session.session_id - Payment.session_id
