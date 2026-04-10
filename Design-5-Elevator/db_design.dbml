@@ -1,0 +1,69 @@
+Building [icon: building, color: blue] {
+  building_id int [pk]
+  name string
+  city string
+  address string
+  total_floors int
+}
+
+Floor [icon: layers, color: blue] {
+  floor_id int [pk]
+  building_id int [fk]
+  floor_number int
+  alias string
+}
+
+Elevator [icon: server, color: purple] {
+  elevator_id int [pk]
+  building_id int [fk]
+  label string
+  status string
+  current_floor_id int [fk]
+}
+
+Elevator_Floor_Coverage [icon: map, color: purple] {
+  coverage_id int [pk]
+  elevator_id int [fk]
+  floor_id int [fk]
+}
+
+Ride_Request [icon: user-plus, color: yellow] {
+  request_id int [pk]
+  building_id int [fk]
+  source_floor_id int [fk]
+  destination_floor_id int [fk]
+  direction string
+  status string
+  requested_at datetime
+}
+
+Ride_Allocation [icon: activity, color: green] {
+  ride_id int [pk]
+  request_id int [fk]
+  elevator_id int [fk]
+  dispatched_at datetime
+  completed_at datetime
+  status string
+}
+
+Maintenance_Log [icon: tool, color: orange] {
+  maintenance_id int [pk]
+  elevator_id int [fk]
+  issue_description string
+  started_at datetime
+  completed_at datetime
+  status string
+  technician_id string
+}
+
+Building.building_id < Floor.building_id
+Building.building_id < Elevator.building_id
+Floor.floor_id - Elevator.current_floor_id
+Elevator.elevator_id < Elevator_Floor_Coverage.elevator_id
+Floor.floor_id < Elevator_Floor_Coverage.floor_id
+Building.building_id < Ride_Request.building_id
+Floor.floor_id < Ride_Request.source_floor_id
+Floor.floor_id < Ride_Request.destination_floor_id
+Ride_Request.request_id - Ride_Allocation.request_id
+Elevator.elevator_id < Ride_Allocation.elevator_id
+Elevator.elevator_id < Maintenance_Log.elevator_id
