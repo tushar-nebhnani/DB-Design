@@ -54,7 +54,7 @@ The tables interact with each other to form a cohesive, normalized workflow. Her
 
 ### Ride Request and Fulfillment Workflow
 * **Ride Request to Floors (Many-to-1):** A single `Ride_Request` relies on the `Floor` table twice: once to establish the `source_floor` (where the user is) and once to establish the `destination_floor` (where the user is going).
-* **Ride Request to Ride Allocation (1-to-1):** Every individual user `Ride_Request` results in exactly one `Ride_Allocation`. The request is the *problem*, and the allocation is the system's *solution*.
+* **Ride Request to Ride Allocation (1-to-1):** Every individual user `Ride_Request` results in exactly one `Ride_Allocation`. The request is the problem, and the allocation is the system's solution.
 * **Elevator to Ride Allocation (1-to-Many):** Over its lifetime, a single `Elevator` will be assigned to fulfill thousands of `Ride_Allocations`. This relationship links the physical car to the historical record of the trips it has made.
 
 ### Maintenance Tracking
